@@ -1,0 +1,145 @@
+openapi: 3.0.3
+info:
+  title: Todo Management API
+  description: API endpoints for managing todos in the Todo Management System
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /todos:
+    post:
+      summary: Add a new todo
+      operationId: createTodo
+      tags:
+        - Todos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoDTO'
+      responses:
+        '201':
+          description: Successfully added the todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoDTO'
+        '400':
+          description: Invalid input data
+        '403':
+          description: Operation forbidden
+    get:
+      summary: Get a list of available todos
+      operationId: getAllTodos
+      tags:
+        - Todos
+      responses:
+        '200':
+          description: Successfully retrieved list of todos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Resource not found
+  /todos/{id}:
+    get:
+      summary: Get a todo by ID
+      operationId: getTodoById
+      tags:
+        - Todos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved the todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoDTO'
+        '404':
+          description: Todo not found
+    put:
+      summary: Update an existing todo by ID
+      operationId: updateTodo
+      tags:
+        - Todos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoDTO'
+      responses:
+        '200':
+          description: Successfully updated the todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoDTO'
+        '400':
+          description: Invalid input data
+        '404':
+          description: Todo not found
+        '403':
+          description: Operation forbidden
+    delete:
+      summary: Delete a todo by ID
+      operationId: deleteTodo
+      tags:
+        - Todos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Successfully deleted the todo
+        '404':
+          description: Todo not found
+        '403':
+          description: Operation forbidden
+components:
+  schemas:
+    TodoDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        completed:
+          type: boolean
+        createTime:
+          type: string
+          format: date-time
+        updateTime:
+          type: string
+          format: date-time
+      required:
+        - title
+        - completed
